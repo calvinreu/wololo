@@ -4,10 +4,10 @@ package graphic
 import "github.com/veandco/go-sdl2/sdl"
 import "fmt"
 
-//Graphic contains the information required to render a window with diffrent sprites
+//Graphic contains the information required to render a window with diffrent Sprites
 type Graphic struct
 {
-	sprites []Sprite
+	Sprites []Sprite
 	renderer* sdl.Renderer
 	window* sdl.Window
 }
@@ -16,7 +16,7 @@ type Graphic struct
 func (graphic Graphic) Render()  {
 	graphic.renderer.Clear()
 
-	for _, i := range graphic.sprites {
+	for _, i := range graphic.Sprites {
 		for j := i.instances.Front(); j != nil; j = j.Next() {
 			if instance, ok := j.Value.(Instance); ok {
 				graphic.renderer.CopyEx(i.texture, &i.srcRect, &instance.destRect, instance.angle, instance.center, sdl.FLIP_HORIZONTAL)
@@ -28,7 +28,7 @@ func (graphic Graphic) Render()  {
 	graphic.renderer.Present()
 }
 
-//New returns a Graphic object with initialized renderer and window note that sprites have to be added manual
+//New returns a Graphic object with initialized renderer and window note that Sprites have to be added manual
 func New(title string, x, y, width, heigh int32, WindowFlags, RendererFlags uint32) (Graphic, error) {
 	var graphic Graphic
 	var err = sdl.Init(sdl.INIT_VIDEO)
@@ -57,7 +57,11 @@ func (graphic* Graphic) AddSprite(imgPath string, srcRect sdl.Rect) (int, error)
 	var err error
 	var sprite Sprite
 	sprite, err = NewSprite(graphic.renderer, imgPath, srcRect)
-	graphic.sprites = append(graphic.sprites, sprite)
+	if err != nil {
+		fmt.Print(err)
+		return -1, err
+	}
+	graphic.Sprites = append(graphic.Sprites, sprite)
 
-	return len(graphic.sprites)-1, err
+	return len(graphic.Sprites)-1, err
 }
