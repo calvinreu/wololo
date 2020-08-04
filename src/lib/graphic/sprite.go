@@ -38,12 +38,20 @@ func NewSprite(renderer *sdl.Renderer, imgPath string, srcRect sdl.Rect) (Sprite
 }
 
 //NewInstance adds a instance to the sprite and initializes the width and height of the dest rectangle with the src rectangle
-func (sprite *Sprite) NewInstance() *list.Element {
+func (sprite *Sprite) NewInstance(angle float64, center* sdl.Point) *list.Element {
 	var instance Instance
 
+	instance.NewPosition(center)
 	instance.destRect.W = sprite.srcRect.W
 	instance.destRect.H = sprite.srcRect.H
-	instance.angle = 0
+	instance.angle = angle
 
 	return sprite.instances.PushBack(instance)
+}
+
+//NewPosition sets the position of this instance center is the center of the instances new position
+func (instance *Instance) NewPosition (center* sdl.Point)  {
+	instance.center = center
+	instance.destRect.X = center.X - (instance.destRect.W/2)
+	instance.destRect.Y = center.Y - (instance.destRect.H/2)
 }
