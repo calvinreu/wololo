@@ -14,6 +14,20 @@ type Graphic struct {
 	window   *sdl.Window
 }
 
+//RunOutput will render FPS frames every second until running is false
+func (graphic Graphic) RunOutput(FPS uint32, running *bool) {
+	var timeStamp, frameTime uint32
+	frameTime = 1000 / FPS
+
+	for *running {
+		timeStamp = sdl.GetTicks()
+		graphic.Render()
+		if sdl.GetTicks()-timeStamp < frameTime {
+			sdl.Delay(frameTime - (sdl.GetTicks() - timeStamp))
+		}
+	}
+}
+
 //Render renders the information from the graphic object to the screen
 func (graphic Graphic) Render() {
 	graphic.Renderer.Clear()
@@ -33,7 +47,7 @@ func (graphic Graphic) Render() {
 //New returns a Graphic object with initialized renderer and window note that Sprites have to be added manual
 func New(title string, x, y, width, heigh int32, WindowFlags, RendererFlags uint32) (Graphic, error) {
 	var graphic Graphic
-	var err = sdl.InitSubSystem(sdl.INIT_VIDEO)
+	var err = sdl.Init(sdl.INIT_VIDEO | sdl.INIT_TIMER)
 	if err != nil {
 		return graphic, err
 	}
