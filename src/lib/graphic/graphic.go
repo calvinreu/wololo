@@ -30,6 +30,8 @@ func (graphic Graphic) RunOutput(FPS uint32, running *bool) {
 
 //Render renders the information from the graphic object to the screen
 func (graphic Graphic) Render() {
+
+	graphic.Renderer.SetDrawColor(255, 255, 255, 1)
 	graphic.Renderer.Clear()
 
 	for _, i := range graphic.Sprites {
@@ -54,7 +56,7 @@ func New(title string, x, y, width, heigh int32, WindowFlags, RendererFlags uint
 
 	graphic.window, err = sdl.CreateWindow(title, x, y, width, heigh, WindowFlags)
 	if err != nil {
-		sdl.QuitSubSystem(sdl.INIT_VIDEO)
+		sdl.QuitSubSystem(sdl.INIT_VIDEO | sdl.INIT_TIMER)
 		return graphic, err
 	}
 
@@ -69,15 +71,17 @@ func New(title string, x, y, width, heigh int32, WindowFlags, RendererFlags uint
 }
 
 //AddSprite adds another sprite which can be used be creating a instance of it see Sprite.NewInstance
-func (graphic *Graphic) AddSprite(imgPath string, srcRect sdl.Rect) (int, error) {
+func (graphic *Graphic) AddSprite(imgPath string, srcRect sdl.Rect) (uint32, error) {
 	var err error
 	var sprite Sprite
+	retIndex := len(graphic.Sprites)
+
 	sprite, err = NewSprite(graphic.Renderer, imgPath, srcRect)
 	if err != nil {
 		fmt.Print(err)
-		return -1, err
+		return 0, err
 	}
 	graphic.Sprites = append(graphic.Sprites, sprite)
 
-	return len(graphic.Sprites) - 1, err
+	return uint32(retIndex), err
 }
