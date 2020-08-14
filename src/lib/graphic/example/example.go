@@ -31,13 +31,10 @@ func main() {
 	for i := 0; i < len(instances1); i++ {
 		instances2[i].Value = example.Sprites[sprite2].NewInstance((float64)(i*36), &sdl.Point{(int32)(i * 192), (int32)(i*108 + 100)})
 	}
-
-	example.Renderer.SetDrawColor(255, 255, 255, 1)
-
-	example.Render()
-
-	sdl.InitSubSystem(sdl.INIT_TIMER)
-	sdl.Delay(5000)
+	running := true
+	go example.RunOutput(10, &running)
+	sdl.Delay(1000)
+	running = false
 
 	fmt.Print("the result should look very chaotic \n")
 
